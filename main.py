@@ -13,6 +13,14 @@
 # start "" "C:\Users\omid3\AppData\Local\Programs\Blitz\Blitz.exe"
 
 import customtkinter as ctk
+from tkinter import StringVar, TOP
+from tkinterdnd2 import DND_FILES, TkinterDnD
+
+
+class Tk(ctk.CTk, TkinterDnD.DnDWrapper):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.TkdndVersion = TkinterDnD._require(self)
 
 
 class SideBar(ctk.CTkScrollableFrame):
@@ -26,6 +34,7 @@ class SideBar(ctk.CTkScrollableFrame):
         self.title.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="ew")
 
         for i, value in enumerate(self.values):
+            # activate the checkbox by default
             checkbox = ctk.CTkCheckBox(self, text=value)
             checkbox.grid(row=i + 1, column=0, padx=10, pady=(10, 0), sticky="w")
             self.checkboxes.append(checkbox)
@@ -38,7 +47,17 @@ class SideBar(ctk.CTkScrollableFrame):
         return checked_checkboxes
 
 
-class App(ctk.CTk):
+class DragAndDrop(ctk.CTkFrame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+
+        self.label = ctk.CTkLabel(self, text="Drag and Drop Files Here")
+        self.label.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="ew")
+
+
+class App(Tk):
     def __init__(self):
         super().__init__()
 
@@ -47,19 +66,26 @@ class App(ctk.CTk):
         self.grid_columnconfigure((0, 1), weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        self.side_bar_l = SideBar(self, ["Riot Client", "Blitz", "Valorant"])
+        self.files = []
+        self.side_bar_l = SideBar(self, self.files, title="Selected Files:")
         self.side_bar_l.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="nsew")
 
-        self.side_bar_r = SideBar(self, ["1", "2", "3"])
-        self.side_bar_r.grid(row=0, column=1, padx=(0, 10), pady=(10, 0), sticky="nsew")
-        self.side_bar_r.configure(fg_color="transparent")
+        self.drag_and_drop = DragAndDrop(self)
+        self.drag_and_drop.grid(row=0, column=1, padx=10, pady=(10, 0), sticky="nsew")
+        self.drag_and_drop.drop_target_register(DND_FILES)
+        self.drag_and_drop.dnd_bind("<<Drop>>", self.drop)
 
         self.button = ctk.CTkButton(self, text="Run", command=self.button_callback)
         self.button.grid(row=3, column=0, padx=10, pady=10, sticky="ew", columnspan=2)
 
     def button_callback(self):
         print("checked checkboxes:", self.side_bar_l.get())
-        print("checked checkboxes:", self.side_bar_r.get())
+
+    def drop(self, event):
+        self.files.append(event.data)
+        self.side_bar_l.destroy()
+        self.side_bar_l = SideBar(self, self.files, title="Selected Files")
+        self.side_bar_l.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="nsew")
 
 
 app = App()
