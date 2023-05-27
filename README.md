@@ -2,7 +2,7 @@
 
 _Pronounced as "baric"_
 
-![image](https://github.com/omid3098/BAR1C/assets/6388730/b4a9f465-bafb-4639-b821-de7fb2a8134c)
+![image](https://github.com/omid3098/BAR1C/assets/6388730/aa3771eb-22aa-4234-b659-7c3ee703ea3c)
 
 ## Description
 
