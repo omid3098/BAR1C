@@ -1,17 +1,3 @@
-# An app with these features:
-# - It has a main window with one button "Run"
-# - It has a drag and drop area that user can drag files into that area.
-# - Has a text input field to name the file saved file
-# - It uses customtkinter library to have a modern look and feel
-# - when user drags multiple files into the drag area, the app shows the icons of those dropped files, and when they press the save button, the app will create a .bat file like this:
-# @echo off
-
-# REM Run Riot Client
-# start "" "D:\Games\Riot Games\Riot Client\RiotClientServices.exe" --launch-product=league_of_legends --launch-patchline=live
-
-# REM Run Blitz
-# start "" "C:\Users\omid3\AppData\Local\Programs\Blitz\Blitz.exe"
-
 import os
 import customtkinter as ctk
 from tkinterdnd2 import DND_FILES, TkinterDnD
@@ -36,21 +22,12 @@ class SideBar(ctk.CTkScrollableFrame):
 
         for i, value in enumerate(self.values):
             value = value.strip("{}")
-
-            # show lables of the files that are dropped
-            # value is the path of the file
-            # file name is the last part of the path without the extension
+            # show only the file name
             file_name = self.get_filename_without_ext(value)
             lable = ctk.CTkLabel(self, text=file_name)
             lable.grid(row=i + 1, column=0, padx=10, pady=(10, 0), sticky="w")
 
-            # full_path = ctk.CTkLabel(self, text=value)
-            # full_path.grid(row=i + 1, column=1, padx=10, pady=(10, 0), sticky="w")
             self.items.append(value)
-
-            # checkbox = ctk.CTkCheckBox(self, text=value)
-            # checkbox.grid(row=i + 1, column=0, padx=10, pady=(10, 0), sticky="w")
-            # self.items.append(checkbox)
 
     def get(self):
         return self.items
@@ -99,7 +76,7 @@ class App(Tk):
         self.file_name_entry.grid(row=1, column=1, padx=10, pady=(10, 0), sticky="ew")
 
         self.run_button = ctk.CTkButton(
-            self, text="Run", command=self.run_button_callback
+            self, text="Create", command=self.run_button_callback
         )
         self.run_button.grid(
             row=2, column=0, padx=10, pady=10, sticky="ew", columnspan=2
@@ -122,6 +99,7 @@ class App(Tk):
         # if the directory does not exist, create it
         if not os.path.exists(desktop_path):
             os.makedirs(desktop_path)
+        # TODO: In some cases in windows 11 the desktop path is in a OneDrive folder like: C:\Users\{username}\OneDrive\Desktop
         file_path = os.path.join(desktop_path, file_name)
         with open(file_path, "w") as f:
             f.write(bat_file_contents)
