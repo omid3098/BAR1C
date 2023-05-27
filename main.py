@@ -1,4 +1,5 @@
 import os
+import sys
 import customtkinter as ctk
 from tkinterdnd2 import DND_FILES, TkinterDnD
 
@@ -52,9 +53,10 @@ class DragAndDrop(ctk.CTkFrame):
 class App(Tk):
     def __init__(self):
         super().__init__()
-
         self.title("Bulk Runner")
         self.geometry("900x480")
+        # theme:
+
         self.grid_columnconfigure((0, 1), weight=1)
         self.grid_rowconfigure(0, weight=1)
 
@@ -112,6 +114,17 @@ class App(Tk):
         self.side_bar_l.destroy()
         self.side_bar_l = SideBar(self, self.files, title="Selected Files")
         self.side_bar_l.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="nsew")
+
+
+def resource_path(relative_path):
+    """Get absolute path to resource, works for dev and for PyInstaller"""
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 
 app = App()
