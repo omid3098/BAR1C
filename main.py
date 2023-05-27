@@ -44,20 +44,16 @@ class SideBar(ctk.CTkScrollableFrame):
             lable = ctk.CTkLabel(self, text=file_name)
             lable.grid(row=i + 1, column=0, padx=10, pady=(10, 0), sticky="w")
 
-            full_path = ctk.CTkLabel(self, text=value)
-            full_path.grid(row=i + 1, column=1, padx=10, pady=(10, 0), sticky="w")
-            self.items.append(full_path)
+            # full_path = ctk.CTkLabel(self, text=value)
+            # full_path.grid(row=i + 1, column=1, padx=10, pady=(10, 0), sticky="w")
+            self.items.append(value)
 
             # checkbox = ctk.CTkCheckBox(self, text=value)
             # checkbox.grid(row=i + 1, column=0, padx=10, pady=(10, 0), sticky="w")
             # self.items.append(checkbox)
 
     def get(self):
-        checked_checkboxes = []
-        for checkbox in self.items:
-            # if checkbox.get() == 1:
-            checked_checkboxes.append(checkbox.cget("text"))
-        return checked_checkboxes
+        return self.items
 
     def get_filename_without_ext(self, filepath):
         filepath = filepath.strip("{}")
@@ -94,32 +90,44 @@ class App(Tk):
         self.drag_and_drop.drop_target_register(DND_FILES)
         self.drag_and_drop.dnd_bind("<<Drop>>", self.drop)
 
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=10)
+        self.file_name_label = ctk.CTkLabel(self, text="File Name:")
+        self.file_name_label.grid(row=1, column=0, padx=10, pady=(10, 0), sticky="ew")
+
+        self.file_name_entry = ctk.CTkEntry(self)
+        self.file_name_entry.grid(row=1, column=1, padx=10, pady=(10, 0), sticky="ew")
+
         self.run_button = ctk.CTkButton(
             self, text="Run", command=self.run_button_callback
         )
         self.run_button.grid(
-            row=1, column=0, padx=10, pady=10, sticky="ew", columnspan=2
+            row=2, column=0, padx=10, pady=10, sticky="ew", columnspan=2
         )
 
     def run_button_callback(self):
         links = self.side_bar_l.get()
-        # lets create a .bat file contents with powershell commands like:
-        # @echo off
-        # PowerShell -Command "Start-Process 'C:/Users/omid3/OneDrive/Desktop/Blitz.lnk'"
-        # PowerShell -Command "Start-Process 'C:/Users/omid3/OneDrive/Desktop/League of Legends.lnk'"
-        # pause
-
         bat_file_contents = "@echo off\n\n"
         for link in links:
-            # add powershell command to the bat file
             bat_file_contents += f"PowerShell -Command \"Start-Process '{link}'\"\n"
 
-        # add pause at the end of the bat file
-        bat_file_contents += "pause"
         print(bat_file_contents)
-        # save the bat file on the desktop located at:
-        with open("run.bat", "w") as f:
+        # save the bat file on the desktop with the name that user entered in self.file_name_entry
+        file_name = self.file_name_entry.get()
+        file_name = file_name.strip()
+        if not file_name:
+            file_name = "bulk_runner"
+        file_name = file_name + ".bat"
+        desktop_path = os.path.join(os.path.join(os.environ["USERPROFILE"]), "Desktop")
+        # if the directory does not exist, create it
+        if not os.path.exists(desktop_path):
+            os.makedirs(desktop_path)
+        file_path = os.path.join(desktop_path, file_name)
+        with open(file_path, "w") as f:
             f.write(bat_file_contents)
+
+        # open windows explorer on the desktop
+        os.startfile(desktop_path)
 
     def drop(self, event):
         self.files.append(event.data)
