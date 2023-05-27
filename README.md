@@ -12,7 +12,7 @@ I also wanted to learn how to use CustomTkinter, so... yeah.
 
 - Install requirements with `pip install -r requirements.txt`
 - Find CustomTkinter installation path: `pip show customtkinter`
-- If you are using venv, Build with `pyinstaller --noconfirm --onefile --windowed --icon "{project-path}/src/icon.ico" --add-data "{project-path}/.venv/Lib/site-packages/customtkinter;customtkinter/" --add-data "{project-path}/.venv/Lib/site-packages/tkinterdnd2;tkinterdnd2/" "{project-path}/main.py"`
+- If you are using venv, Build with `pyinstaller --noconfirm --onefile --windowed --icon "/icon.ico" --add-data ".venv/Lib/site-packages/customtkinter;customtkinter/" --add-data ".venv/Lib/site-packages/tkinterdnd2;tkinterdnd2/" "main.py"`
 
   Or use auto-py-to-exe and add required dependencies (dnd2 and customtkinter)
 
