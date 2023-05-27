@@ -12,8 +12,8 @@
 # REM Run Blitz
 # start "" "C:\Users\omid3\AppData\Local\Programs\Blitz\Blitz.exe"
 
+import os
 import customtkinter as ctk
-from tkinter import StringVar, TOP
 from tkinterdnd2 import DND_FILES, TkinterDnD
 
 
@@ -28,23 +28,42 @@ class SideBar(ctk.CTkScrollableFrame):
         super().__init__(master)
         self.values = values
         self.grid_columnconfigure(0, weight=1)
-        self.checkboxes = []
+        self.grid_columnconfigure(1, weight=3)
+        self.items = []
 
         self.title = ctk.CTkLabel(self, text=title, fg_color="gray30", corner_radius=6)
         self.title.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="ew")
 
         for i, value in enumerate(self.values):
-            # activate the checkbox by default
-            checkbox = ctk.CTkCheckBox(self, text=value)
-            checkbox.grid(row=i + 1, column=0, padx=10, pady=(10, 0), sticky="w")
-            self.checkboxes.append(checkbox)
+            value = value.strip("{}")
+
+            # show lables of the files that are dropped
+            # value is the path of the file
+            # file name is the last part of the path without the extension
+            file_name = self.get_filename_without_ext(value)
+            lable = ctk.CTkLabel(self, text=file_name)
+            lable.grid(row=i + 1, column=0, padx=10, pady=(10, 0), sticky="w")
+
+            full_path = ctk.CTkLabel(self, text=value)
+            full_path.grid(row=i + 1, column=1, padx=10, pady=(10, 0), sticky="w")
+            self.items.append(full_path)
+
+            # checkbox = ctk.CTkCheckBox(self, text=value)
+            # checkbox.grid(row=i + 1, column=0, padx=10, pady=(10, 0), sticky="w")
+            # self.items.append(checkbox)
 
     def get(self):
         checked_checkboxes = []
-        for checkbox in self.checkboxes:
-            if checkbox.get() == 1:
-                checked_checkboxes.append(checkbox.cget("text"))
+        for checkbox in self.items:
+            # if checkbox.get() == 1:
+            checked_checkboxes.append(checkbox.cget("text"))
         return checked_checkboxes
+
+    def get_filename_without_ext(self, filepath):
+        filepath = filepath.strip("{}")
+        basename = os.path.basename(filepath)
+        filename, _ = os.path.splitext(basename)
+        return filename
 
 
 class DragAndDrop(ctk.CTkFrame):
@@ -62,7 +81,7 @@ class App(Tk):
         super().__init__()
 
         self.title("Bulk Runner")
-        self.geometry("400x180")
+        self.geometry("900x480")
         self.grid_columnconfigure((0, 1), weight=1)
         self.grid_rowconfigure(0, weight=1)
 
@@ -75,11 +94,32 @@ class App(Tk):
         self.drag_and_drop.drop_target_register(DND_FILES)
         self.drag_and_drop.dnd_bind("<<Drop>>", self.drop)
 
-        self.button = ctk.CTkButton(self, text="Run", command=self.button_callback)
-        self.button.grid(row=3, column=0, padx=10, pady=10, sticky="ew", columnspan=2)
+        self.run_button = ctk.CTkButton(
+            self, text="Run", command=self.run_button_callback
+        )
+        self.run_button.grid(
+            row=1, column=0, padx=10, pady=10, sticky="ew", columnspan=2
+        )
 
-    def button_callback(self):
-        print("checked checkboxes:", self.side_bar_l.get())
+    def run_button_callback(self):
+        links = self.side_bar_l.get()
+        # lets create a .bat file contents with powershell commands like:
+        # @echo off
+        # PowerShell -Command "Start-Process 'C:/Users/omid3/OneDrive/Desktop/Blitz.lnk'"
+        # PowerShell -Command "Start-Process 'C:/Users/omid3/OneDrive/Desktop/League of Legends.lnk'"
+        # pause
+
+        bat_file_contents = "@echo off\n\n"
+        for link in links:
+            # add powershell command to the bat file
+            bat_file_contents += f"PowerShell -Command \"Start-Process '{link}'\"\n"
+
+        # add pause at the end of the bat file
+        bat_file_contents += "pause"
+        print(bat_file_contents)
+        # save the bat file on the desktop located at:
+        with open("run.bat", "w") as f:
+            f.write(bat_file_contents)
 
     def drop(self, event):
         self.files.append(event.data)
