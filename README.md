@@ -10,6 +10,13 @@ Sometimes (like When I want to play games), I need to open multiple apps. like t
 
 I also wanted to learn how to use CustomTkinter, so... yeah.
 
+## Usage:
+
+- Drag and drop apps to the drop area
+- Choose a file name for the batch file
+- Click on "Create" button
+  A batch file will be created in your desktop. Double click on it to run the apps.
+
 ## Build:
 
 - Install requirements with `pip install -r requirements.txt`
