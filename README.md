@@ -1,8 +1,12 @@
-# Bulk Runner
+# Batch Application Runner 1 Click (BAR1C)
+
+_Pronounced as "baric"_
 
 ## Description
 
-Sometimes (like When I want to play games), I need to open multiple apps. like the game itself, discord, camera app, streaming softwares, etc. So I made this tool to make it easier to open multiple apps at once.
+Sometimes (like When I want to play games), I need to open multiple apps. like the game itself, discord, camera app, streaming softwares, etc. So I made this tool to make it easier to open multiple apps at once using one batch file.
+
+I also wanted to learn how to use CustomTkinter, so... yeah.
 
 ## Build:
 

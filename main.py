@@ -53,8 +53,9 @@ class DragAndDrop(ctk.CTkFrame):
 class App(Tk):
     def __init__(self):
         super().__init__()
-        self.title("Bulk Runner")
+        self.title("BAR1C")
         self.geometry("900x480")
+        self.iconbitmap(resource_path("src/icon.ico"))
         # theme:
 
         self.grid_columnconfigure((0, 1), weight=1)
