@@ -2,7 +2,7 @@
 
 ## Description
 
-A simple tool to create a .bat file to run multiple applications at once!
+Sometimes (like When I want to play games), I need to open multiple apps. like the game itself, discord, camera app, streaming softwares, etc. So I made this tool to make it easier to open multiple apps at once.
 
 ## Build:
 
