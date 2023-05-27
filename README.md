@@ -2,6 +2,8 @@
 
 _Pronounced as "baric"_
 
+![image](https://github.com/omid3098/BAR1C/assets/6388730/b4a9f465-bafb-4639-b821-de7fb2a8134c)
+
 ## Description
 
 Sometimes (like When I want to play games), I need to open multiple apps. like the game itself, discord, camera app, streaming softwares, etc. So I made this tool to make it easier to open multiple apps at once using one batch file.
